@@ -65,7 +65,6 @@ public class DefaultBeanFactory implements BeanFactory {
                 this.beanDefinitionMap.put(id, bd);
             }
         } catch (Exception e) {
-            // TODO 抛出异常
             e.printStackTrace();
         } finally {
             if (is != null) {

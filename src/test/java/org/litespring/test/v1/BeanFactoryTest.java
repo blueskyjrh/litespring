@@ -21,4 +21,9 @@ public class BeanFactoryTest {
         PetStoreService petStore = (PetStoreService) factory.getBean("petStore");
         assertNotNull(petStore);
     }
+
+    @Test
+    public void testInvalidBean() {
+
+    }
 }
