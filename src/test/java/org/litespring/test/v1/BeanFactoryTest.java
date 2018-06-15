@@ -1,17 +1,14 @@
 package org.litespring.test.v1;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.litespring.beans.BeanDefinition;
 import org.litespring.beans.factory.BeanCreationException;
 import org.litespring.beans.factory.BeanDefinitionStoreException;
-import org.litespring.beans.factory.BeanFactory;
-import org.litespring.beans.factory.support.BeanDefinitionRegistry;
 import org.litespring.beans.factory.support.DefaultBeanFactory;
 import org.litespring.beans.factory.xml.XMLBeanDefinitionReader;
 import org.litespring.service.v1.PetStoreService;
-
-import java.rmi.registry.Registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,10 +16,17 @@ import static org.junit.Assert.assertNotNull;
 
 public class BeanFactoryTest {
 
+    DefaultBeanFactory factory = null;
+    XMLBeanDefinitionReader reader = null;
+
+    @Before
+    public void setUp() throws Exception {
+        factory = new DefaultBeanFactory();
+        reader = new XMLBeanDefinitionReader(factory);
+    }
+
     @Test
     public void testGetBean() {
-        DefaultBeanFactory factory = new DefaultBeanFactory();
-        XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
         reader.loadBeanDefinition("petstore-v1.xml");
         BeanDefinition bd = factory.getBeanDefinition("petStore");
         assertEquals("org.litespring.service.v1.PetStoreService", bd.getBeanClassName());
@@ -32,8 +36,6 @@ public class BeanFactoryTest {
 
     @Test
     public void testInvalidBean() {
-        DefaultBeanFactory factory = new DefaultBeanFactory();
-        XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
         reader.loadBeanDefinition("petstore-v1.xml");
         try {
             factory.getBean("invalidBean");
@@ -46,8 +48,6 @@ public class BeanFactoryTest {
     @Test
     public void testInvalidXML() {
         try {
-            DefaultBeanFactory factory = new DefaultBeanFactory();
-            XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
             reader.loadBeanDefinition("xxxx.xml");
         } catch (BeanDefinitionStoreException e) {
             return;
