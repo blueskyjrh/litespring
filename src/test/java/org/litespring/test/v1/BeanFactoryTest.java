@@ -6,8 +6,12 @@ import org.litespring.beans.BeanDefinition;
 import org.litespring.beans.factory.BeanCreationException;
 import org.litespring.beans.factory.BeanDefinitionStoreException;
 import org.litespring.beans.factory.BeanFactory;
+import org.litespring.beans.factory.support.BeanDefinitionRegistry;
 import org.litespring.beans.factory.support.DefaultBeanFactory;
+import org.litespring.beans.factory.xml.XMLBeanDefinitionReader;
 import org.litespring.service.v1.PetStoreService;
+
+import java.rmi.registry.Registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -17,17 +21,20 @@ public class BeanFactoryTest {
 
     @Test
     public void testGetBean() {
-        BeanFactory factory = new DefaultBeanFactory("petstore-v1.xml");
+        DefaultBeanFactory factory = new DefaultBeanFactory();
+        XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
+        reader.loadBeanDefinition("petstore-v1.xml");
         BeanDefinition bd = factory.getBeanDefinition("petStore");
         assertEquals("org.litespring.service.v1.PetStoreService", bd.getBeanClassName());
-
         PetStoreService petStore = (PetStoreService) factory.getBean("petStore");
         assertNotNull(petStore);
     }
 
     @Test
     public void testInvalidBean() {
-        BeanFactory factory = new DefaultBeanFactory("petstore-v1.xml");
+        DefaultBeanFactory factory = new DefaultBeanFactory();
+        XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
+        reader.loadBeanDefinition("petstore-v1.xml");
         try {
             factory.getBean("invalidBean");
         } catch (BeanCreationException e) {
@@ -39,7 +46,9 @@ public class BeanFactoryTest {
     @Test
     public void testInvalidXML() {
         try {
-            new DefaultBeanFactory("xxxx.xml");
+            DefaultBeanFactory factory = new DefaultBeanFactory();
+            XMLBeanDefinitionReader reader = new XMLBeanDefinitionReader(factory);
+            reader.loadBeanDefinition("xxxx.xml");
         } catch (BeanDefinitionStoreException e) {
             return;
         }
