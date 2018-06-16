@@ -8,6 +8,8 @@ import org.litespring.beans.factory.BeanCreationException;
 import org.litespring.beans.factory.BeanDefinitionStoreException;
 import org.litespring.beans.factory.support.DefaultBeanFactory;
 import org.litespring.beans.factory.xml.XMLBeanDefinitionReader;
+import org.litespring.core.io.ClassPathResource;
+import org.litespring.core.io.Resource;
 import org.litespring.service.v1.PetStoreService;
 
 import static org.junit.Assert.assertEquals;
@@ -18,6 +20,7 @@ public class BeanFactoryTest {
 
     DefaultBeanFactory factory = null;
     XMLBeanDefinitionReader reader = null;
+    Resource resource = null;
 
     @Before
     public void setUp() throws Exception {
@@ -27,7 +30,8 @@ public class BeanFactoryTest {
 
     @Test
     public void testGetBean() {
-        reader.loadBeanDefinition("petstore-v1.xml");
+        resource = new ClassPathResource("petstore-v1.xml");
+        reader.loadBeanDefinition(resource);
         BeanDefinition bd = factory.getBeanDefinition("petStore");
         assertEquals("org.litespring.service.v1.PetStoreService", bd.getBeanClassName());
         PetStoreService petStore = (PetStoreService) factory.getBean("petStore");
@@ -36,7 +40,8 @@ public class BeanFactoryTest {
 
     @Test
     public void testInvalidBean() {
-        reader.loadBeanDefinition("petstore-v1.xml");
+        resource = new ClassPathResource("petstore-v1.xml");
+        reader.loadBeanDefinition(resource);
         try {
             factory.getBean("invalidBean");
         } catch (BeanCreationException e) {
@@ -47,8 +52,9 @@ public class BeanFactoryTest {
 
     @Test
     public void testInvalidXML() {
+        resource = new ClassPathResource("xxxx.xml");
         try {
-            reader.loadBeanDefinition("xxxx.xml");
+            reader.loadBeanDefinition(resource);
         } catch (BeanDefinitionStoreException e) {
             return;
         }
