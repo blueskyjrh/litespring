@@ -2,16 +2,17 @@ package org.litespring.beans.factory.support;
 
 import org.litespring.beans.BeanDefinition;
 import org.litespring.beans.factory.BeanCreationException;
-import org.litespring.beans.factory.BeanFactory;
+import org.litespring.beans.factory.config.ConfigurableBeanFactory;
 import org.litespring.utils.ClassUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
-
+public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefinitionRegistry {
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, BeanDefinition>();
+
+    private ClassLoader beanClassLoader;
 
     @Override
     public Object getBean(String beanId) {
@@ -19,7 +20,7 @@ public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
         if (bd == null) {
             throw new BeanCreationException("Bean Definition does not exist");
         }
-        ClassLoader c1 = ClassUtils.getDefaultClassLoader();
+        ClassLoader c1 = this.getBeanClassLoader();
         String beanClassName = bd.getBeanClassName();
         try {
             Class<?> clz = c1.loadClass(beanClassName);
@@ -37,5 +38,15 @@ public class DefaultBeanFactory implements BeanFactory, BeanDefinitionRegistry {
     @Override
     public void registerBeanDefinition(String beanID, BeanDefinition bd) {
         beanDefinitionMap.put(beanID, bd);
+    }
+
+    @Override
+    public void setBeanClassLoader(ClassLoader classLoader) {
+        this.beanClassLoader = classLoader;
+    }
+
+    @Override
+    public ClassLoader getBeanClassLoader() {
+        return this.beanClassLoader == null? (ClassUtils.getDefaultClassLoader()):this.beanClassLoader;
     }
 }

@@ -9,7 +9,6 @@ import org.litespring.beans.factory.BeanDefinitionStoreException;
 import org.litespring.beans.factory.support.BeanDefinitionRegistry;
 import org.litespring.beans.factory.support.GenericBeanDefinition;
 import org.litespring.core.io.Resource;
-import org.litespring.utils.ClassUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,9 +16,9 @@ import java.util.Iterator;
 
 public class XMLBeanDefinitionReader {
 
-    public static final String ID_ARRTIBUTE = "id";
+    private static final String ID_ATTRIBUTE = "id";
 
-    public static final String CLASS_ARRTIBUTE = "class";
+    private static final String CLASS_ATTRIBUTE = "class";
 
     private BeanDefinitionRegistry registry;
 
@@ -30,7 +29,6 @@ public class XMLBeanDefinitionReader {
     public void loadBeanDefinition(Resource resource) {
         InputStream is = null;
         try {
-            ClassLoader c1 = ClassUtils.getDefaultClassLoader();
             is = resource.getInputStream();
             SAXReader reader = new SAXReader();
             Document doc = reader.read(is);
@@ -38,8 +36,8 @@ public class XMLBeanDefinitionReader {
             Iterator<Element> iter = root.elementIterator();
             while (iter.hasNext()) {
                 Element ele = iter.next();
-                String id = ele.attributeValue(ID_ARRTIBUTE);
-                String className = ele.attributeValue(CLASS_ARRTIBUTE);
+                String id = ele.attributeValue(ID_ATTRIBUTE);
+                String className = ele.attributeValue(CLASS_ATTRIBUTE);
                 BeanDefinition bd = new GenericBeanDefinition(id, className);
                 registry.registerBeanDefinition(id, bd);
             }
