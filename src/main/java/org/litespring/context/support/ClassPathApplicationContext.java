@@ -6,7 +6,7 @@ import org.litespring.context.ApplicationContext;
 
 public class ClassPathApplicationContext implements ApplicationContext {
 
-    DefaultBeanFactory factory = null;
+    private DefaultBeanFactory factory = null;
 
     public ClassPathApplicationContext(String configFile) {
         factory = new DefaultBeanFactory();
