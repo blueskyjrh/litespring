@@ -8,7 +8,7 @@ import org.litespring.utils.ClassUtils;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefinitionRegistry {
+public class DefaultBeanFactory extends DefaultSingletonBeanRegistry implements ConfigurableBeanFactory, BeanDefinitionRegistry {
 
     private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<String, BeanDefinition>();
 
@@ -20,14 +20,15 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefiniti
         if (bd == null) {
             throw new BeanCreationException("Bean Definition does not exist");
         }
-        ClassLoader c1 = this.getBeanClassLoader();
-        String beanClassName = bd.getBeanClassName();
-        try {
-            Class<?> clz = c1.loadClass(beanClassName);
-            return clz.newInstance();
-        } catch (Exception e) {
-            throw new BeanCreationException("create bean for " + beanClassName + " failed", e);
+        if (bd.isSingleton()) {
+            Object bean = this.getSingletone(beanId);
+            if (bean == null) {
+                bean = createBean(bd);
+                registerSingleton(beanId, bean);
+            }
+            return bean;
         }
+        return createBean(bd);
     }
 
     @Override
@@ -48,5 +49,16 @@ public class DefaultBeanFactory implements ConfigurableBeanFactory, BeanDefiniti
     @Override
     public ClassLoader getBeanClassLoader() {
         return this.beanClassLoader == null? (ClassUtils.getDefaultClassLoader()):this.beanClassLoader;
+    }
+
+    private Object createBean(BeanDefinition bd) {
+        ClassLoader c1 = this.getBeanClassLoader();
+        String beanClassName = bd.getBeanClassName();
+        try {
+            Class<?> clz = c1.loadClass(beanClassName);
+            return clz.newInstance();
+        } catch (Exception e) {
+            throw new BeanCreationException("create bean for " + beanClassName + " failed", e);
+        }
     }
 }

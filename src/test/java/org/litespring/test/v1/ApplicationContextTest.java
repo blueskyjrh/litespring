@@ -22,7 +22,7 @@ public class ApplicationContextTest {
 
     @Test
     public void testGetBeanFromFileSystemContext() {
-        String path = ClassUtils.getDefaultClassLoader().getResource("petstore-v1.xml").getPath().replaceFirst("/", "");
+        String path = Thread.currentThread().getContextClassLoader().getResource("petstore-v1.xml").getFile();
         ctx = new FileSystemApplicationContext(path);
     }
 
