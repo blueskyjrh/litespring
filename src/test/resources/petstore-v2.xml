@@ -6,6 +6,9 @@
     <bean id="petStore" class="org.litespring.service.v2.PetStoreService">
         <property name="accountDao" ref="accountDao"></property>
         <property name="itemDao" ref="itemDao"></property>
+        <property name="name" value="Jane"></property>
+        <property name="age" value="18"></property>
+        <property name="flag" value="on"></property>
     </bean>
 
     <bean id="accountDao" class="org.litespring.dao.v2.AccountDao"/>

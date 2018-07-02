@@ -1,7 +1,6 @@
 # notes for litespring
 
-----
-###SPR 单一职责原则
+### SPR 单一职责原则
 - 职责：
 
 		如果有多余一个的动机去改变一个类，这个类就具有多个职责。
@@ -18,7 +17,7 @@
 
 - BeanDefinition是内部概念，不应该放到BeanFactory里。
 
-####使用BeanFactoryRegistry的好处
+#### 使用BeanFactoryRegistry的好处
 
 1.  XMLBeanDefinitionReader可以获取BeanDefiniton,也可以注册BeanDefinition,但是不知道getBean方法
 1.  接口最大化，只希望类知道越少的接口越好。
