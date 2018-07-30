@@ -120,7 +120,7 @@ public class XMLBeanDefinitionReader {
     }
 
     public void parseConstructorArgElements(Element element, BeanDefinition bd) {
-        Iterator iter = element.elementIterator();
+        Iterator iter = element.elementIterator(CONSTRUCTOR_ARG_ELEMENT);
         while (iter.hasNext()) {
             Element ele = (Element) iter.next();
             this.parseConstructorToArgElement(ele, bd);
